@@ -154,6 +154,7 @@ public class DangNhap extends JFrame {
 						        maNguoiDung = rs.getString("MASINHVIEN");
 						        tenNguoiDung = rs.getString("TENSINHVIEN");
 						        app.mnQuanLy.setVisible(false);
+						        app.mnHoatDong.setVisible(true);
 						    }
 						}
 						db.close();

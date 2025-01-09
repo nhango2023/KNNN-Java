@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 
 import model.User;
 import ui.DangNhap;
+import ui.QuanLyGiangVien;
 
 public class App extends JFrame {
 
@@ -26,6 +27,8 @@ public class App extends JFrame {
 	public JMenuItem mntmQuanLyGiangVien;
 	public JMenu mnQuanLy;
 	public JMenuItem mntmDangXuat;
+	public JMenu mnHoatDong;
+	public JMenuItem mntmXemHoatDong;
 	/**
 	 * Launch the application.
 	 */
@@ -81,6 +84,13 @@ public class App extends JFrame {
 		mntmQuanLyGiangVien = new JMenuItem("Quản lý giảng viên");
 		mnQuanLy.add(mntmQuanLyGiangVien);
 		
+		mnHoatDong = new JMenu("Hoạt động");
+		menuBar.add(mnHoatDong);
+		mnHoatDong.setVisible(false);
+		
+		mntmXemHoatDong = new JMenuItem("Xem hoạt động");
+		mnHoatDong.add(mntmXemHoatDong);
+		
 		lblTenNguoiDung = new JLabel("Chưa đăng nhập");
 		lblTenNguoiDung.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		lblTenNguoiDung.setBounds(10, 357, 196, 23);
@@ -96,7 +106,10 @@ public class App extends JFrame {
 		    mnQuanLy.setVisible(false);
 		    mntmDangXuat.setVisible(false);
 		    mntmDangNhap.setVisible(true);
-		   
+		   mnHoatDong.setVisible(false);
+		});
+		mntmQuanLyGiangVien.addActionListener(e -> {
+		    new QuanLyGiangVien();
 		});
 		this.setVisible(true);
 	}
