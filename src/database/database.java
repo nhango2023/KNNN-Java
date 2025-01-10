@@ -1,7 +1,11 @@
 package database;
 
-import java.sql.*;
-import javax.swing.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.JOptionPane;
 
 public class database {
 	public Connection conn = null;
@@ -20,16 +24,16 @@ public class database {
 	}
 
 //Phuong thuc dung de truy van CSDL 
-	public ResultSet Excute(String sql) {
-		ResultSet result = null;
-		try {
-			CallableStatement callableStatement = conn.prepareCall(sql);
+	public ResultSet Excute(String sql) throws SQLException {
+	    ResultSet result = null;
+	    CallableStatement callableStatement = null;
+	    try {
+	        callableStatement = conn.prepareCall(sql);
 	        result = callableStatement.executeQuery();
-	        return result;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
+	    } catch (SQLException e) {
+	        throw e; // Re-throw the exception to propagate it
+	    }
+	    return result;
 	}
 	
 	public void close() {

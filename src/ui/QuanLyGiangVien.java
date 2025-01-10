@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
@@ -34,8 +35,11 @@ public class QuanLyGiangVien extends JFrame {
     private JTable table;
     private DefaultTableModel tableModel;
     private Id id = new Id();
-    private String HanhDong="";
     private database db = new database();
+    private JButton btnLuu;
+    private JButton btnHuy;
+    private String hanhDong = "";
+    
 
     public QuanLyGiangVien() {
         setTitle("Quản Lý Giảng Viên");
@@ -72,8 +76,8 @@ public class QuanLyGiangVien extends JFrame {
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
         btnXoa = new JButton("Xóa");
-        JButton btnLuu = new JButton("Lưu");
-        JButton btnHuy = new JButton("Hủy");
+        btnLuu  = new JButton("Lưu");
+         btnHuy = new JButton("Hủy");
         JButton btnThoat = new JButton("Thoát");
         buttonPanel.add(btnThem);
         buttonPanel.add(btnSua);
@@ -128,47 +132,36 @@ public class QuanLyGiangVien extends JFrame {
         btnThem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnThem.setEnabled(false);
-                btnSua.setEnabled(false);
-                btnXoa.setEnabled(false);
-                btnLuu.setEnabled(true);
-                btnHuy.setEnabled(true);
+               hanhDong="them";
+               btnsKhoaMo();
                tfTenGV.setEnabled(true);
                tfKhoa.setEnabled(true);
-               HanhDong="Them";
             }
         });
 	    btnLuu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	if(HanhDong=="Them") {
+            	if(hanhDong=="Them") {
             		String tenGV = tfTenGV.getText();
             		String khoa = tfKhoa.getText();
             		
                   if (!tenGV.isEmpty() && !khoa.isEmpty()) {
+                	  String maGiangVien  = "GV"+id.TaoId();
                 	  try {
                 		  db.connect();
-//                		  String sql = String.format("CALL  ", maTaiKhoan);
+                		 String sql = String.format("CALL ThemGiangVien('%s', '%s', '%s')", maGiangVien, tenGV, khoa);
+                		 db.Excute(sql);
                 		  db.close();
-                		  btnThem.setEnabled(true);
-                          btnSua.setEnabled(true);
-                          btnXoa.setEnabled(true);
-                          btnLuu.setEnabled(false);
-                          btnHuy.setEnabled(false);
-                         tfTenGV.setEnabled(false);
-                         tfKhoa.setEnabled(false);
-                         HanhDong="";
-                         
+                		  JOptionPane.showMessageDialog(null, "Thêm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                		//refresh table	
+                		  loadDataTable();
+                		  hanhDong="";
+                		  
+                		  btnsKhoaMo();
                 	  }
                 	  catch (SQLException err) {
-              	        err.printStackTrace();
-              	        JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu từ cơ sở dữ liệu", "Error", JOptionPane.ERROR_MESSAGE);
-              	    }
-                      
-                	  
-                	  
-                	//refresh table
-      				
+              	        JOptionPane.showMessageDialog(null, "Lỗi vui lòng thử lại", "Error", JOptionPane.ERROR_MESSAGE);
+              	    }                                  	       	
                   } else {
                       JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!");
                   }
@@ -184,6 +177,8 @@ public class QuanLyGiangVien extends JFrame {
                
             }
         });
+	    btnsKhoaMo();
+	    loadDataTable();
     }
 
     // Lớp BackgroundPanel để hiển thị ảnh nền
@@ -212,6 +207,39 @@ public class QuanLyGiangVien extends JFrame {
             QuanLyGiangVien frame = new QuanLyGiangVien();
             frame.setVisible(true);
         });
+    }
+    public void btnsKhoaMo () {
+		if(hanhDong.equals("")) {
+			btnThem.setEnabled(true);
+			btnSua.setEnabled(true);
+			btnXoa.setEnabled(true);
+			btnLuu.setEnabled(false);
+			btnHuy.setEnabled(false);
+		}else if(hanhDong.equals("them") || hanhDong.equals("sua")) {
+			btnThem.setEnabled(false);
+			btnSua.setEnabled(false);
+			btnXoa.setEnabled(false);
+			btnLuu.setEnabled(true);
+			btnHuy.setEnabled(true);
+		}
+	}
+    public void loadDataTable() {
+    	tableModel.setRowCount(0);
+    	try {
+    		db.connect();
+    		String sql = "Call XemGiangVien()";
+    		ResultSet rs = db.Excute(sql);
+    		while (rs.next()) {
+				String tenGiangVien = rs.getString("TENGIANGVIEN");
+				String maGiangVien = rs.getString("MAGIANGVIEN");
+				String khoa = rs.getString("KHOA");
+				
+				tableModel.addRow(new Object[] { maGiangVien, tenGiangVien,khoa  });
+			}
+    	}
+    	catch (SQLException err) {
+  	        JOptionPane.showMessageDialog(null, "Lỗi vui lòng thử lại", "Error", JOptionPane.ERROR_MESSAGE);
+  	    }
     }
 }
 

@@ -220,44 +220,51 @@ public class QuanLyTaiKhoan extends JFrame {
                     	loaiTaiKhoan="LTK003";
                     }
     			    try {
-    			    	db.connect();
-    			    	db.conn.setAutoCommit(false);
-    			    	String sql = String.format("CALL DangNhap('%s', '%s', '%s', '%s')", maTaiKhoan, loaiTaiKhoan, tenNguoiSoHuu, matKhau);
-    			    	db.Excute(sql);
-    			    	if (loaiTaiKhoan.equals("LTK002")) {
-    			    		sql = String.format("CALL ThemTaiKhoanChoGiangVien('%s', '%s')", maNguoiSoHuu, maTaiKhoan);
-    			    	}
-    			    	else if (loaiTaiKhoan.equals("LTK003")) {
-    			    		sql = String.format("CALL ThemTaiKhoanChoSinhVien('%s', '%s')", maNguoiSoHuu, maTaiKhoan);
-    			    	}
-    			    	db.conn.commit();
-    			    	db.close();
-    			    	JOptionPane.showMessageDialog(null, "Thêm thành công", "Success", JOptionPane.INFORMATION_MESSAGE);
-    			    }
-    			    catch (SQLException ex) {
-    		            // Rollback transaction on error
-    		            if (db != null) {
-    		                try {
-    		                    db.conn.rollback();
-    		                } catch (SQLException rollbackEx) {
-    		                    JOptionPane.showMessageDialog(null, "Failed to rollback transaction: " + rollbackEx.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    		                }
-    		            }
-    		            JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    		        } finally {
-    		            // Close the database connection
-    		            if (db != null) {
-    		                try {
-    		                    db.conn.setAutoCommit(true); // Reset to default behavior
-    		                    db.close();
-    		                } catch (SQLException closeEx) {
-    		                    JOptionPane.showMessageDialog(null, "Failed to close connection: " + closeEx.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    		                }
-    		            }
-    		        }
-    		    	// Proceed with logic if validation passes
-    		    	
-    		    	
+    			        db.connect();
+    			        db.conn.setAutoCommit(false);
+
+    			        // Create the account
+    			        String sql = String.format("CALL ThemTaiKhoan('%s', '%s', '%s', '%s')", maTaiKhoan, loaiTaiKhoan, tenDangNhap, matKhau);
+    			        db.Excute(sql);
+
+    			        // Assign the account to a person based on account type
+    			        if (loaiTaiKhoan.equals("LTK002")) {
+    			            sql = String.format("CALL ThemTaiKhoanChoGiangVien('%s', '%s')", maNguoiSoHuu, maTaiKhoan);
+    			        } else if (loaiTaiKhoan.equals("LTK003")) {
+    			            sql = String.format("CALL ThemTaiKhoanChoSinhVien('%s', '%s')", maNguoiSoHuu, maTaiKhoan);
+    			        }
+
+    			        // Execute the stored procedure
+    			        db.Excute(sql);
+
+    			        // Commit the transaction
+    			        db.conn.commit();
+
+    			        // Show success message
+    			        JOptionPane.showMessageDialog(null, "Thêm thành công", "Success", JOptionPane.INFORMATION_MESSAGE);
+    			    } catch (SQLException ex) {
+    			        // Rollback transaction on error
+    			        if (db.conn != null) {
+    			            try {
+    			                db.conn.rollback();
+    			            } catch (SQLException rollbackEx) {
+    			                JOptionPane.showMessageDialog(null, "Failed to rollback transaction: " + rollbackEx.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    			            }
+    			        }
+
+    			        // Show error message from the stored procedure
+    			        JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    			    } finally {
+    			        // Close the database connection
+    			        if (db.conn != null) {
+    			            try {
+    			                db.conn.setAutoCommit(true); // Reset to default behavior
+    			                db.close();
+    			            } catch (SQLException closeEx) {
+    			                JOptionPane.showMessageDialog(null, "Failed to close connection: " + closeEx.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    			            }
+    			        }
+    			    } 		    	
                 } else {
                     JOptionPane.showMessageDialog(null, "Mật khẩu không giống nhau!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -279,6 +286,9 @@ public class QuanLyTaiKhoan extends JFrame {
 		btnThoat.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		btnThoat.setBounds(592, 265, 90, 33);
 		contentPane.add(btnThoat);
+		btnThoat.addActionListener(e -> {
+			this.dispose();
+		});
 
 		 cbb = new JComboBox();
 		cbb.setFont(new Font("Times New Roman", Font.PLAIN, 20));

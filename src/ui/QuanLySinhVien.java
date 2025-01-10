@@ -142,4 +142,19 @@ public class QuanLySinhVien extends JFrame {
             frame.setVisible(true);
         });
     }
+//    public void btnsKhoaMo () {
+//		if(hanhDong.equals("")) {
+//			btnThem.setEnabled(true);
+//			btnSua.setEnabled(true);
+//			btnXoa.setEnabled(true);
+//			btnLuu.setEnabled(false);
+//			btnHuy.setEnabled(false);
+//		}else if(hanhDong.equals("them") || hanhDong.equals("sua")) {
+//			btnThem.setEnabled(false);
+//			btnSua.setEnabled(false);
+//			btnXoa.setEnabled(false);
+//			btnLuu.setEnabled(true);
+//			btnHuy.setEnabled(true);
+//		}
+//	}
 }
