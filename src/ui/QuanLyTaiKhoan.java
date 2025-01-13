@@ -64,7 +64,38 @@ public class QuanLyTaiKhoan extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+
+	public QuanLyTaiKhoan (String loaiTaiKhoan, String maTaiKhoan, String maNguoiSoHuu) {
+		init();
+		if (loaiTaiKhoan.equals("LTK002")) {
+			
+            for (int i = 0; i < tbTaiKhoan.getRowCount(); i++) {
+                if (tbTaiKhoan.getValueAt(i, 0).equals(maTaiKhoan)) {
+                    // Select the row
+                	
+                	tbTaiKhoan.setRowSelectionInterval(i, i);
+
+                    // Scroll to the selected row
+                	tbTaiKhoan.scrollRectToVisible(tbTaiKhoan.getCellRect(i, 0, true));
+                    break;
+                }else if(tbTaiKhoan.getValueAt(i, 3).equals(maNguoiSoHuu)) {
+                	JOptionPane.showMessageDialog(null, "Chưa có tài khoản");
+                	tbTaiKhoan.setRowSelectionInterval(i, i);              	
+                    // Scroll to the selected row
+                	tbTaiKhoan.scrollRectToVisible(tbTaiKhoan.getCellRect(i, 0, true));               	
+                    break;
+                }
+            }
+		}
+		else if(loaiTaiKhoan.equals("LTK003")) {
+			loadDataTableAndCombobox(loaiTaiKhoan);
+		}
+	}
+	
 	public QuanLyTaiKhoan() {
+		init();
+	}
+	public void init() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 772, 546);
 		contentPane = new JPanel();
@@ -102,11 +133,9 @@ public class QuanLyTaiKhoan extends JFrame {
 		tfMatKhau.setEchoChar('*');
 
 		tbTaiKhoan = new JTable();
-		tbTaiKhoan = new JTable();
 		tbTaiKhoan.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		tbTaiKhoan.setRowHeight(22); // Adjust row height to fit the font size
-		tbTaiKhoan.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "M\u00E3 sinh vi\u00EAn", "T\u00EAn Sinh Vi\u00EAn", "M\u00F4 t\u1EA3" }));
+
 
 		// Wrap the JTable inside a JScrollPane
 		JScrollPane scrollPane = new JScrollPane(tbTaiKhoan);
@@ -115,7 +144,7 @@ public class QuanLyTaiKhoan extends JFrame {
 		tbTaiKhoan.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		tbTaiKhoan.setRowHeight(22); // Adjust row height to fit the font size
 		model = new DefaultTableModel(new Object[][] {},
-				new String[] { "Mã tài khoản", "Tên đăng nhập", "Tên người sở hữu" });
+				new String[] { "Mã tài khoản", "Tên đăng nhập", "Tên người sở hữu", "Mã người sỡ hữu" });
 		tbTaiKhoan.setModel(model);
 
 		JRadioButton rdbtnGiangVien = new JRadioButton("Giảng viên");
@@ -269,11 +298,7 @@ public class QuanLyTaiKhoan extends JFrame {
                     JOptionPane.showMessageDialog(null, "Mật khẩu không giống nhau!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-		    	
-		    	
-
-		    	
-
+		    	    	
 		    }
 		});
 		
@@ -332,26 +357,26 @@ public class QuanLyTaiKhoan extends JFrame {
 					String tenGiangVien = rs.getString("TENGIANGVIEN");
 					String maTaiKhoan = rs.getString("MATAIKHOAN");
 					String tenDangNhap = rs.getString("TENDANGNHAP");
-					model.addRow(new Object[] { maTaiKhoan, tenDangNhap, tenGiangVien });
+					String ma = rs.getString("MAGIANGVIEN");
+					model.addRow(new Object[] { maTaiKhoan, tenDangNhap, tenGiangVien, ma });
 				}
 				sql="call XemGiangVien()";
 				rs = db.Excute(sql);
 				
-
 		        // Populate JComboBox and Map
 		        while (rs != null && rs.next()) {
 		            String maGiangVien = rs.getString("MAGIANGVIEN");
 		            String tenGiangVien = rs.getString("TENGIANGVIEN");
 		            cbbMapData.put(tenGiangVien, maGiangVien); // Map TENSINHVIEN to MASV
 		            cbb.addItem(tenGiangVien); // Add TENSINHVIEN to JComboBox
-		        }
-				
+		        }	
 			}else {
 				while (rs.next()) {
 					String tenSinhVien = rs.getString("TENSINHVIEN");
 					String maTaiKhoan = rs.getString("MATAIKHOAN");
 					String tenDangNhap = rs.getString("TENDANGNHAP");
-					model.addRow(new Object[] { maTaiKhoan, tenDangNhap, tenSinhVien });
+					String ma = rs.getString("MASINHVIEN");
+					model.addRow(new Object[] { maTaiKhoan, tenDangNhap, tenSinhVien, ma });
 				}
 				sql="call XemSinhVien()";
 				rs = db.Excute(sql);
