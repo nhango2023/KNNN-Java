@@ -12,8 +12,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import model.User;
-import ui.DangNhap;
-import ui.QuanLyGiangVien;
+import view.DangNhap;
+import view.QuanLyGiangVien;
+import view.QuanLyHoatDong;
+import view.QuanLyKhoa;
+import view.QuanLyLop;
+import view.QuanLySinhVien;
+import view.QuanLyTaiKhoan;
 
 public class App extends JFrame {
 
@@ -22,13 +27,14 @@ public class App extends JFrame {
 	public User NguoiDung= new User();
 	public JMenuItem mntmDangNhap;
 	public JLabel lblTenNguoiDung;
-	public JMenuItem mntmQuanLySinhVien;
-	public JMenuItem mntmQuanLyHoatDong;
-	public JMenuItem mntmQuanLyGiangVien;
+	public JMenuItem mntmSinhVien;
+	public JMenuItem mntmHoatDong;
+	public JMenuItem mntmGiangVien;
 	public JMenu mnQuanLy;
 	public JMenuItem mntmDangXuat;
-	public JMenu mnHoatDong;
-	public JMenuItem mntmXemHoatDong;
+	public JMenuItem mntmTaiKhoan;
+	public JMenuItem mntmKhoa;
+	public JMenuItem mntmLop;
 	/**
 	 * Launch the application.
 	 */
@@ -75,21 +81,24 @@ public class App extends JFrame {
 		mnQuanLy = new JMenu("Quản lý");
 		menuBar.add(mnQuanLy);
 		mnQuanLy.setVisible(false);
-		mntmQuanLySinhVien = new JMenuItem("Quản lý sinh viên");
-		mnQuanLy.add(mntmQuanLySinhVien);
 		
-		mntmQuanLyHoatDong = new JMenuItem("Quản lý hoạt động");
-		mnQuanLy.add(mntmQuanLyHoatDong);
+		mntmSinhVien = new JMenuItem("Sinh viên");
+		mnQuanLy.add(mntmSinhVien);
 		
-		mntmQuanLyGiangVien = new JMenuItem("Quản lý giảng viên");
-		mnQuanLy.add(mntmQuanLyGiangVien);
+		mntmHoatDong = new JMenuItem("Hoạt động");
+		mnQuanLy.add(mntmHoatDong);
 		
-		mnHoatDong = new JMenu("Hoạt động");
-		menuBar.add(mnHoatDong);
-		mnHoatDong.setVisible(false);
+		mntmGiangVien = new JMenuItem("Giảng viên");
+		mnQuanLy.add(mntmGiangVien);
 		
-		mntmXemHoatDong = new JMenuItem("Xem hoạt động");
-		mnHoatDong.add(mntmXemHoatDong);
+		 mntmTaiKhoan = new JMenuItem("Tài khoản");
+		mnQuanLy.add(mntmTaiKhoan);
+		
+		mntmKhoa = new JMenuItem("Khoa");
+		mnQuanLy.add(mntmKhoa);
+		
+		mntmLop = new JMenuItem("Lớp");
+		mnQuanLy.add(mntmLop);
 		
 		lblTenNguoiDung = new JLabel("Chưa đăng nhập");
 		lblTenNguoiDung.setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -106,10 +115,25 @@ public class App extends JFrame {
 		    mnQuanLy.setVisible(false);
 		    mntmDangXuat.setVisible(false);
 		    mntmDangNhap.setVisible(true);
-		   mnHoatDong.setVisible(false);
+		   new DangNhap(this);
 		});
-		mntmQuanLyGiangVien.addActionListener(e -> {
+		mntmGiangVien.addActionListener(e -> {
 		    new QuanLyGiangVien();
+		});
+		mntmSinhVien.addActionListener(e -> {
+		    new QuanLySinhVien();
+		});
+		mntmHoatDong.addActionListener(e -> {
+		    new QuanLyHoatDong(NguoiDung);
+		});
+		mntmTaiKhoan.addActionListener(e -> {
+		    new QuanLyTaiKhoan();
+		});
+		mntmKhoa.addActionListener(e -> {
+		    new QuanLyKhoa();
+		});
+		mntmLop.addActionListener(e -> {
+		    new QuanLyLop();
 		});
 		this.setVisible(true);
 	}
